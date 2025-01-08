@@ -1,17 +1,11 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
-# Controls when the workflow will run
 on:
   pull_request:
 
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
     env:
       VOLCENGINE_ACCESS_KEY: ${{ secrets.VOLCENGINE_ACCESS_KEY }}
@@ -19,7 +13,6 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.VOLCENGINE_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.VOLCENGINE_SECRET_KEY }}
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
@@ -28,9 +21,9 @@ jobs:
       
       - name: check env
         run: |
-          if [ ! -d "environments/$GITHUB_HEAD_REF" ]; then
+          if [ ! -d "regions/$GITHUB_HEAD_REF" ]; then
             echo "*************************SKIPPING************************************"
-            echo "Branch '$GITHUB_HEAD_REF' does not represent an oficial environment."
+            echo "Branch '$GITHUB_HEAD_REF' does not match an online region."
             echo "*********************************************************************"
             exit 1
           fi
@@ -41,18 +34,18 @@ jobs:
 
       - name: terraform init
         id: init
-        working-directory: environments/${{ github.head_ref	}}
-        run: terraform init
+        working-directory: regions/${{ github.head_ref	}}
+        run: terraform init -backend-config="backend.hcl"
 
       - name: terraform validate
         id: validate
-        working-directory: environments/${{ github.head_ref	}}
+        working-directory: regions/${{ github.head_ref	}}
         run: terraform validate
           
       - name: terraform plan
         id: plan
         if: github.event_name == 'pull_request'
-        working-directory: environments/${{ github.head_ref	}}
+        working-directory: regions/${{ github.head_ref	}}
         run: |
           plan_info=""
           dir_count=`ls -l | grep "^d" | wc -l`
@@ -63,7 +56,7 @@ jobs:
               env=${env#*/}
               echo ""
               echo "========> Terraform Plan <========"
-              echo "At environment: ${{ github.head_ref	}}"
+              echo "At region: ${{ github.head_ref	}}"
               echo "At workspace: ${env}"
               echo "=================================="
 

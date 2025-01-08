@@ -24,11 +24,11 @@ jobs:
 
       - name: terraform init
         id: init
-        working-directory: environments/${{ github.head_ref	}}
-        run: terraform init
+        working-directory: regions/${{ github.head_ref	}}
+        run: terraform init -backend-config="backend.hcl"
 
       - name: terraform apply
-        working-directory: environments/${{ github.head_ref }}
+        working-directory: regions/${{ github.head_ref }}
         run: |
           dir_count=`ls -l | grep "^d" | wc -l`
           if [ $dir_count -gt 0 ]; then
@@ -38,7 +38,7 @@ jobs:
               env=${env#*/}
               echo ""
               echo "========> Terraform Apply <========"
-              echo "At environment: ${{ github.head_ref	}}"
+              echo "At region: ${{ github.head_ref	}}"
               echo "At workspace: ${env}"
               echo "=================================="
               

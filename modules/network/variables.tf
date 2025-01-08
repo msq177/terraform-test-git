@@ -1,38 +1,53 @@
-variable "vpc_id" {
-  default     = ""
-  description = "The vpc id used to launch resources."
-}
-
 variable "vpc_name" {
-  default     = "tf-modules-vpc"
-  description = "The vpc name used to launch a new vpc when 'vpc_id' is not specified."
+  description = "Vpc name"
+  type        = string
+  default     = "tf-demo-vpc"
 }
 
 variable "vpc_cidr" {
+  description = "Vpc CIDR"
+  type        = string
   default     = "172.16.0.0/16"
-  description = "The cidr block used to launch a new vpc when 'vpc_id' is not specified."
-}
-
-variable "vpc_dns_servers" {
-  type        = list(string)
-  default     = []
-  description = "Specify the vpc dns servers when 'vpc_id' is not specified."
 }
 
 variable "zone_id" {
+  description = "Zone id"
   type        = string
   default     = "cn-beijing-a"
-  description = "Specify available zone of VPC subnet and TKE nodes."
 }
 
 variable "subnet_cidr" {
+  description = "Subnet CIDR"
   type        = string
   default     = "10.0.0.0/16"
-  description = "Specify VPC and subnet CIDR."
 }
 
 variable "subnet_name" {
+  description = "Subnet name"
   type        = string
-  default     = "example-subnet"
-  description = "Specify custom Subnet Name."
+  default     = "tf-demo-subnet"
+}
+
+variable "security_group_name" {
+  description = "Security group name"
+  type        = string
+  default     = "tf-demo-sg"
+}
+
+variable "eip_name" {
+  description = "Eip name"
+  type        = string
+  default     = "tf-demo-eip"
+}
+
+variable "billing_type" {
+  description = "Eip billing type"
+  type        = string
+  default     = "PostPaidByBandwidth"
+}
+
+variable "bandwidth" {
+  description = "Eip bandwidth"
+  type        = number
+  default     = 1
 }
